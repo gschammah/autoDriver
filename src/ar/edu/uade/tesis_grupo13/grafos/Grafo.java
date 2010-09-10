@@ -1,16 +1,17 @@
 package ar.edu.uade.tesis_grupo13.grafos;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.jgrapht.WeightedGraph;
 import org.jgrapht.alg.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
 public class Grafo {
 	
-	private SimpleWeightedGraph<Coordenada, DefaultWeightedEdge> grafo;
+	private WeightedGraph<Coordenada, DefaultWeightedEdge> grafo;
 	private Coordenada[][] matrizCoord;
 	private Mapa mapa;
 	private Coordenada startPoint = null;
@@ -30,15 +31,22 @@ public class Grafo {
 	public Mapa getMapa() {
 		return mapa;
 	}
+	
+	public VertexList getVertices(Coordenada coord) {
+		return getVertices(coord.getMatrizX(), coord.getMatrizY());
+	}
 
-	public ArrayList<Coordenada> getVertices(int x, int y) {
+	public VertexList getVertices(int x, int y) {
 		
-		ArrayList<Coordenada> coordenadas = new ArrayList<Coordenada>();		
+		VertexList coordenadas = new VertexList();		
 		
 		Set<DefaultWeightedEdge> aristas = grafo.edgesOf(matrizCoord[y][x]);
+		Iterator<DefaultWeightedEdge> itr = aristas.iterator();			
 		
-		for (DefaultWeightedEdge edge : aristas) {
+		while (itr.hasNext()) {			
+			DefaultWeightedEdge edge = itr.next();
 			coordenadas.add(grafo.getEdgeTarget(edge));
+			coordenadas.add(grafo.getEdgeSource(edge));
 		}
 		
 		return coordenadas;
@@ -90,8 +98,10 @@ public class Grafo {
 					if ( x < matriz[0].length - 1 && !matriz[y][x+1] ) {						
 						if (mapa.isBorder(x, y) || mapa.isBorder(x+1, y)) { weight = 5;}
 						grafo.addEdge(matrizCoord[y][x], matrizCoord[y][x+1]);						
-						grafo.setEdgeWeight(grafo.getEdge(matrizCoord[y][x], matrizCoord[y][x+1]), weight);											
-					}				
+						grafo.setEdgeWeight(grafo.getEdge(matrizCoord[y][x], matrizCoord[y][x+1]), weight);																	
+					}		
+					
+					weight = 1;
 					
 					//Me fijo si el cuadro de abajo no es parte de una pared
 					if ( y < matriz.length - 1 && !matriz[y+1][x] ) {
@@ -109,9 +119,11 @@ public class Grafo {
 						grafo.setEdgeWeight(grafo.getEdge(matrizCoord[y][x], matrizCoord[y+1][x+1]), weight);
 					}
 					
+					weight = 1.5;
+					
 					//Me fijo si el cuadro diagonal izquierdo de abajo no es parte de una pared
 					if ( x > 0  && y < matriz.length - 1 && !matriz[y+1][x-1] ) {
-						if (mapa.isBorder(x, y) || mapa.isBorder(x-1, y+1)) { weight = 7.5;}
+						if (mapa.isBorder(x, y) || mapa.isBorder(x-1, y+1)) { weight = 7.5;}						
 						grafo.addEdge(matrizCoord[y][x], matrizCoord[y+1][x-1]);
 						grafo.setEdgeWeight(grafo.getEdge(matrizCoord[y][x], matrizCoord[y+1][x-1]), weight);
 					}
@@ -122,16 +134,18 @@ public class Grafo {
 		}		
 	}
 	
-	public ArrayList<Coordenada> calcularCamino(int x, int y, int x2, int y2) {
+	public VertexList calcularCamino(int x, int y, int x2, int y2) {
 		
-		ArrayList<Coordenada> resultado = new ArrayList<Coordenada>();
+		VertexList resultado = new VertexList();
 		
 		List<DefaultWeightedEdge> path = DijkstraShortestPath.findPathBetween(grafo, matrizCoord[y][x], matrizCoord[y2][x2]);
 		
-		if (path != null && !path.isEmpty()) {
-			resultado.add(grafo.getEdgeSource(path.get(0)));
-			for (DefaultWeightedEdge edge : path) {
-				resultado.add(grafo.getEdgeTarget(edge));
+		if (path != null && !path.isEmpty()) {			
+			for (DefaultWeightedEdge edge : path) {				
+				resultado.add(grafo.getEdgeSource(edge));
+				if (!resultado.contains(grafo.getEdgeTarget(edge))) {
+					resultado.add(grafo.getEdgeTarget(edge));
+				}				
 			}			
 		}		
 		
@@ -146,7 +160,7 @@ public class Grafo {
 		endPoint = coord;
 	}
 
-	public ArrayList<Coordenada> calcularCamino() {		
+	public VertexList calcularCamino() {		
 		return calcularCamino(startPoint.getMatrizX(), startPoint.getMatrizY(), endPoint.getMatrizX(), endPoint.getMatrizY());	
 	}
 
@@ -157,8 +171,5 @@ public class Grafo {
 	public Coordenada getEndPoint() {
 		return endPoint;
 	}
-
-
-		
-	
+			
 }
