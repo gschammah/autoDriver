@@ -4,7 +4,7 @@ package ar.edu.uade.tesis_grupo13.grafos;
 public class Mapa {
 		
 	private boolean[][] matrizParedes;
-	private Grafo grafo;
+	private Grafo grafo;	
 	
 	public Mapa(boolean[][] matrizParedes, Grafo grafo) {
 		this.matrizParedes = matrizParedes;
@@ -54,6 +54,5 @@ public class Mapa {
 	public void setMatrizParedes(boolean[][] matrizParedes) {
 		this.matrizParedes = matrizParedes;
 	}
-
 	
 }
