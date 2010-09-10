@@ -111,10 +111,12 @@ public class Grafo {
 					
 					//Me fijo si el cuadro diagonal izquierdo de abajo no es parte de una pared
 					if ( x > 0  && y < matriz.length - 1 && !matriz[y+1][x-1] ) {
-						if (mapa.isBorder(x, y) || mapa.isBorder(x+1, y+1)) { weight = 7.5;}
+						if (mapa.isBorder(x, y) || mapa.isBorder(x-1, y+1)) { weight = 7.5;}
 						grafo.addEdge(matrizCoord[y][x], matrizCoord[y+1][x-1]);
 						grafo.setEdgeWeight(grafo.getEdge(matrizCoord[y][x], matrizCoord[y+1][x-1]), weight);
-					}					
+					}
+					
+					//TODO: fix conexiones grafo
 				}													
 			}
 		}		
@@ -127,10 +129,11 @@ public class Grafo {
 		List<DefaultWeightedEdge> path = DijkstraShortestPath.findPathBetween(grafo, matrizCoord[y][x], matrizCoord[y2][x2]);
 		
 		if (path != null && !path.isEmpty()) {
+			resultado.add(grafo.getEdgeSource(path.get(0)));
 			for (DefaultWeightedEdge edge : path) {
 				resultado.add(grafo.getEdgeTarget(edge));
-			}
-		}
+			}			
+		}		
 		
 		return resultado;		
 	}
@@ -143,7 +146,7 @@ public class Grafo {
 		endPoint = coord;
 	}
 
-	public ArrayList<Coordenada> calcularCamino() {
+	public ArrayList<Coordenada> calcularCamino() {		
 		return calcularCamino(startPoint.getMatrizX(), startPoint.getMatrizY(), endPoint.getMatrizX(), endPoint.getMatrizY());	
 	}
 
