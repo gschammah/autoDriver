@@ -19,10 +19,9 @@ public class Demo {
 		ad.inicializar();
 		
 		PlayerPose target = ad.getLoc().getTarget(1);		
-		PlayerPose target2 = ad.getLoc().getTarget(2);
+		//PlayerPose target2 = ad.getLoc().getTarget(2);
 		
-		ad.irA(target.getPx(), target.getPy());
-		ad.irA(target2.getPx(), target2.getPy());
+		ad.irA(target.getPx(), target.getPy());		
 		
 		//ad.irA(-2, 3);		
 		//ad.irA(-4, 2);		

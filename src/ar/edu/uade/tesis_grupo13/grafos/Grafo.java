@@ -1,9 +1,9 @@
 package ar.edu.uade.tesis_grupo13.grafos;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
+import org.jgrapht.Graphs;
 import org.jgrapht.WeightedGraph;
 import org.jgrapht.alg.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -41,7 +41,7 @@ public class Grafo {
 		VertexList coordenadas = new VertexList();		
 		
 		Set<DefaultWeightedEdge> aristas = grafo.edgesOf(matrizCoord[y][x]);
-		Iterator<DefaultWeightedEdge> itr = aristas.iterator();			
+		Iterator<DefaultWeightedEdge> itr = aristas.iterator();		
 		
 		while (itr.hasNext()) {			
 			DefaultWeightedEdge edge = itr.next();
@@ -128,26 +128,18 @@ public class Grafo {
 						grafo.setEdgeWeight(grafo.getEdge(matrizCoord[y][x], matrizCoord[y+1][x-1]), weight);
 					}
 					
-					//TODO: fix conexiones grafo
 				}													
 			}
 		}		
 	}
 	
-	public VertexList calcularCamino(int x, int y, int x2, int y2) {
-		
+	public VertexList calcularCamino(int x, int y, int x2, int y2) {		
 		VertexList resultado = new VertexList();
 		
-		List<DefaultWeightedEdge> path = DijkstraShortestPath.findPathBetween(grafo, matrizCoord[y][x], matrizCoord[y2][x2]);
-		
-		if (path != null && !path.isEmpty()) {			
-			for (DefaultWeightedEdge edge : path) {				
-				resultado.add(grafo.getEdgeSource(edge));
-				if (!resultado.contains(grafo.getEdgeTarget(edge))) {
-					resultado.add(grafo.getEdgeTarget(edge));
-				}				
-			}			
-		}		
+		DijkstraShortestPath<Coordenada, DefaultWeightedEdge> d = new DijkstraShortestPath<Coordenada, DefaultWeightedEdge>(grafo, matrizCoord[y][x], matrizCoord[y2][x2]);
+		try {
+			resultado.addAll(Graphs.getPathVertexList(d.getPath()));
+		} catch (NullPointerException e) {}
 		
 		return resultado;		
 	}
