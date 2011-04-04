@@ -1,0 +1,10 @@
+<Config>
+  <speed>0.55</speed>
+  <speedReal>50.0</speedReal>
+  <turnSpeed>0.859318</turnSpeed>
+  <turnSpeedReal>0.7853981633974483</turnSpeedReal>
+  <robotName>robot1</robotName>
+  <diffMagnitude>100</diffMagnitude>
+  <targetName>target</targetName>
+  <mapa>downloads/mapa.xml</mapa>
+</Config>
